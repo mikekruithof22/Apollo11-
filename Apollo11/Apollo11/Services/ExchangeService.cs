@@ -11,7 +11,7 @@ namespace Apollo11.Services
 {
     public class ExchangeService
     {
-        private readonly string endpoint = "GetCandles";
+        private readonly string endpoint = "/fapi/v1/klines";
         public async Task<List<Candle>> GetCandlesAsync()
         {
             var client = GetClient();
