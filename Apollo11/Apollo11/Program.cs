@@ -7,8 +7,8 @@ namespace Apollo11
     {
         static void Main(string[] args)
         {
-            var exchangeService = new ExchangeService();
-            var candles = exchangeService.GetCandlesAsync().Result;
+            // var exchangeService = new ExchangeService();
+            // var candles = exchangeService.GetCandlesAsync().Result;
             // ExchangeService - Get Candles
             // FileService - Save Canldes, Save calculated RSI
             // File Fesvice - Get All Relevant canldes
@@ -20,7 +20,8 @@ namespace Apollo11
             Console.WriteLine("Hello World!");
             var fileService = new FileService();
             fileService.EnsureTables();
-            fileService.WriteCandleToTable();
+            // fileService.WriteCandleToTable();
+            fileService.ReadCellFromTable("");
         }
     }
 }

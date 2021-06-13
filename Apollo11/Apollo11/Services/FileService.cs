@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Apollo11.Models;
 
 namespace Apollo11.Services
 {
@@ -17,21 +18,65 @@ namespace Apollo11.Services
         private readonly string DivergenceTableName = "Divergence.csv";
         private readonly string DivergenceTableFirstLine = "Time Interval;Divergence Index;Current Price"; // todo aram change placeholder
 
-        public void WriteCandleToTable() 
+        public void WriteCandleToTable(Candle candle) 
         {
             Console.WriteLine(nameof(WriteCandleToTable));
 
-            File.AppendAllText(TablesDirectoryPath + "/" + CandleTableName, "T1;100;50;80;90" + Environment.NewLine); // todo aram change
+            var timeInterval = candle.EventTime;
+            var high = candle.Kline.High;
+            var low = candle.Kline.Low;
+            var open = candle.Kline.Open;
+            var close = candle.Kline.Close;
+
+            File.AppendAllText(TablesDirectoryPath + "/" + CandleTableName, timeInterval + high + low + open + close + Environment.NewLine); // todo aram change
         }
 
-        public void WriteRsiToTable()
+        public void ReadCellFromTable(string tableName)
         {
-
+            String line;
+            tableName = CandleTableName; // todo aram for testing
+            var filePath = TablesDirectoryPath + "/" + tableName;
+            try
+            {
+                //Pass the file path and file name to the StreamReader constructor
+                StreamReader sr = new StreamReader(filePath);
+                //Read the first line of text
+                line = sr.ReadLine();
+                //Continue to read until you reach end of file
+                while (line != null)
+                {
+                    //write the lie to console window
+                    Console.WriteLine(line);
+                    //Read the next line
+                    line = sr.ReadLine();
+                }
+                //close the file
+                sr.Close();
+                Console.ReadLine();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception: " + e.Message);
+            }
+            finally
+            {
+                Console.WriteLine("Executing finally block.");
+            }
         }
 
-        public void WriteDivergenceToTable()
+        public void WriteRsiToTable(string timeInterval, string rsiValue)
         {
+            Console.WriteLine(nameof(WriteRsiToTable));
 
+            File.AppendAllText(TablesDirectoryPath + "/" + RsiTableName, timeInterval + rsiValue + Environment.NewLine); // todo aram change
+        }
+
+        public void WriteDivergenceToTable(Divergence divergence)
+        {
+            Console.WriteLine(nameof(WriteDivergenceToTable));
+
+            File.AppendAllText(TablesDirectoryPath + "/" + DivergenceTableName, divergence.TimeInterval +
+                divergence.DivergenceIndex + divergence.CurrentPrice + Environment.NewLine); // todo aram change
         }
 
         public void EnsureTables()
