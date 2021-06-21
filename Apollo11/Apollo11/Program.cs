@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Apollo11.Services;
+using System;
 
 namespace Apollo11
 {
@@ -6,6 +7,8 @@ namespace Apollo11
     {
         static void Main(string[] args)
         {
+            var exchangeService = new ExchangeService();
+            var candles = exchangeService.GetCandlesAsync().Result;
             // ExchangeService - Get Candles
             // FileService - Save Canldes
             // File Fesvice - Get All Relevant canldes
