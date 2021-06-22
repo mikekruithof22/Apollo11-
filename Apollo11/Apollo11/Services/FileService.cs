@@ -9,19 +9,19 @@ namespace Apollo11.Services
         private string TablesDirectoryPath { get; set; }
 
         private readonly string CandleTableName = "Candle.csv";
-        private readonly string CandleTableFirstLine = "Foo;Bar"; // todo aram change 
+        private readonly string CandleTableFirstLine = "Time Interval;High;Low;Open;Close"; // todo aram change placeholder
 
         private readonly string RsiTableName = "Rsi.csv";
-        private readonly string RsiTableFirstLine = "Fizz;Buzz"; // todo aram change 
+        private readonly string RsiTableFirstLine = "Time Interval;Value"; // todo aram change placeholder
 
         private readonly string DivergenceTableName = "Divergence.csv";
-        private readonly string DivergenceTableFirstLine = "Lorem;Ipsum"; // todo aram change 
+        private readonly string DivergenceTableFirstLine = "Time Interval;Divergence Index;Current Price"; // todo aram change placeholder
 
         public void WriteCandleToTable() 
         {
-            Console.WriteLine(nameof(EnsureTables));
+            Console.WriteLine(nameof(WriteCandleToTable));
 
-            File.AppendAllText(TablesDirectoryPath + "/" + CandleTableName, "Fizz;Buzz"); // todo aram change
+            File.AppendAllText(TablesDirectoryPath + "/" + CandleTableName, "T1;100;50;80;90" + Environment.NewLine); // todo aram change
         }
 
         public void WriteRsiToTable()
