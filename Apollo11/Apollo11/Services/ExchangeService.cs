@@ -49,7 +49,7 @@ namespace Apollo11.Services
                 var endpoint = "/api/v3/order";
                 // TODO: fill order
                 var order = new Order();
-                var response = await client.PostAsJsonAsync(string.Format(endpoint, _symbol, _interval, _limit), order);
+                var response = await client.PostAsJsonAsync(endpoint, order);
                 var json = await response.Content.ReadAsStringAsync();
                 var newOrderResponse = JsonConvert.DeserializeObject<NewOrderResponse>(json);
                 return newOrderResponse;

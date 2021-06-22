@@ -1,4 +1,5 @@
-﻿using Apollo11.Services;
+﻿using Apollo11.Helpers;
+using Apollo11.Services;
 using System;
 
 namespace Apollo11
@@ -9,6 +10,7 @@ namespace Apollo11
         {
             var exchangeService = new ExchangeService();
             var candles = exchangeService.GetCandlesAsync().Result;
+            var rsi = PriceEngine.Launch(candles);
             // ExchangeService - Get Candles
             // FileService - Save Canldes
             // File Fesvice - Get All Relevant canldes
