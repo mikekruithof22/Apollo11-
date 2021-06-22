@@ -1,5 +1,5 @@
-﻿using Apollo11.Services;
 using System;
+using Apollo11.Services;
 
 namespace Apollo11
 {
@@ -10,7 +10,7 @@ namespace Apollo11
             var exchangeService = new ExchangeService();
             var candles = exchangeService.GetCandlesAsync().Result;
             // ExchangeService - Get Candles
-            // FileService - Save Canldes
+            // FileService - Save Canldes, Save calculated RSI
             // File Fesvice - Get All Relevant canldes
             // DataProcessor - Calculate RSI
             // DataProcessor - Calculate RSI Delta
@@ -18,6 +18,9 @@ namespace Apollo11
             // BUY?
             // ExchangeService - Buy Bitcoin
             Console.WriteLine("Hello World!");
+            var fileService = new FileService();
+            fileService.EnsureTables();
+            fileService.WriteCandleToTable();
         }
     }
 }
