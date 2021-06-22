@@ -6,7 +6,7 @@ namespace Apollo11.Helpers
 {
     public static class RsiHelper
     {
-        public static decimal CalculateRelativeStrengthIndex(int numberOfDataPoints, List<Kline> hisotircalClines)
+        public static decimal CalculateRelativeStrengthIndex(int numberOfDataPoints, List<Candlestick> hisotircalClines)
         {
             //RSI Forumula from            
             if (hisotircalClines.Count >= numberOfDataPoints)
@@ -23,18 +23,18 @@ namespace Apollo11.Helpers
                     if (i == 0)
                         changeValue = 0;
                     else
-                        changeValue = hisotircalClines[i - 1].EndTime - hisotircalClines[i].EndTime;
+                        changeValue = hisotircalClines[i - 1].CloseTime - hisotircalClines[i].CloseTime;
 
                     if (changeValue == 0)
                         continue; //skip
                     else if (changeValue > 0)
                     {
-                        totalGain = totalGain + hisotircalClines[i - 1].EndTime;
+                        totalGain = totalGain + hisotircalClines[i - 1].CloseTime;
                         daysUp = daysUp + 1;
                     }
                     else
                     {
-                        totalLoss = totalLoss + Math.Abs(hisotircalClines[i - 1].EndTime);
+                        totalLoss = totalLoss + Math.Abs(hisotircalClines[i - 1].CloseTime);
                         daysDown = daysDown + 1;
                     }
                 }
