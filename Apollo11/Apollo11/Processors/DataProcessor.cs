@@ -20,9 +20,9 @@ namespace Apollo11.Processors
             throw new SettingsPropertyNotFoundException("numberOfDataPoints is not a number");
         }
 
-        public void ProcessCandles(List<Kline> klines)
-        {
-            var rsi = RsiHelper.CalculateRelativeStrengthIndex(_numberOfDataPoints, klines);
-        }
+        //public void ProcessCandles(List<Candlestick> candles)
+        //{
+        //    var rsi = RsiHelper.CalculateRelativeStrengthIndex(_numberOfDataPoints, candles);
+        //}
     }
 }
