@@ -37,22 +37,25 @@ namespace Apollo11
 
             var backTrackCount = 25;
 
-            for (int i = 0; i < backTrackCount; i++)
+            for (int j = 0; j < candles.Count; j++)
             {
-                var matchup = new Matchup();
-
-                var currentRsi = rsis[rsis.Length - 1];
-                var comparisonRsi = rsis[rsis.Length - 1];
-                var rsiDelta = currentRsi - comparisonRsi;
-
-                var currentPrice = candles[candles.Count - 1].Close;
-                var comparisonPrice = candles[candles.Count - 1].Close;
-                var PriceDelta = currentPrice - comparisonPrice;
-
-                if (rsiDelta > 0 && PriceDelta < 0)
+                for (int i = 0; i < backTrackCount; i++)
                 {
-                    Console.WriteLine($"DIVERGENCE: rsiDelta={rsiDelta} PriceDelta={PriceDelta}");
+                    var matchup = new Matchup();
 
+                    var currentRsi = rsis[rsis.Length - j];
+                    var comparisonRsi = rsis[rsis.Length - i]; // todo ronald fix dit moet iets van lenght - i worden ofzo, of gwn i, weet ik niet
+                    var rsiDelta = currentRsi - comparisonRsi;
+
+                    var currentPrice = candles[candles.Count - 1].Close;
+                    var comparisonPrice = candles[candles.Count - 1].Close;
+                    var PriceDelta = currentPrice - comparisonPrice;
+
+                    if (rsiDelta > 0 && PriceDelta < 0)
+                    {
+                        Console.WriteLine($"DIVERGENCE: rsiDelta={rsiDelta} PriceDelta={PriceDelta}");
+
+                    }
                 }
             }
         }
