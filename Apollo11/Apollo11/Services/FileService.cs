@@ -18,18 +18,18 @@ namespace Apollo11.Services
         private readonly string DivergenceTableName = "Divergence.csv";
         private readonly string DivergenceTableFirstLine = "Time Interval;Divergence Index;Current Price"; // todo aram change placeholder
 
-        public void WriteCandleToTable(Candle candle) 
-        {
-            Console.WriteLine(nameof(WriteCandleToTable));
+        //public void WriteCandleToTable(Candlestick candle) 
+        //{
+        //    Console.WriteLine(nameof(WriteCandleToTable));
 
-            var timeInterval = candle.EventTime;
-            var high = candle.Kline.High;
-            var low = candle.Kline.Low;
-            var open = candle.Kline.Open;
-            var close = candle.Kline.Close;
+        //    var timeInterval = candle.;
+        //    var high = candle.Kline.High;
+        //    var low = candle.Kline.Low;
+        //    var open = candle.Kline.Open;
+        //    var close = candle.Kline.Close;
 
-            File.AppendAllText(TablesDirectoryPath + "/" + CandleTableName, timeInterval + high + low + open + close + Environment.NewLine); // todo aram change
-        }
+        //    File.AppendAllText(TablesDirectoryPath + "/" + CandleTableName, timeInterval + high + low + open + close + Environment.NewLine); // todo aram change
+        //}
 
         public void ReadCellFromTable(string tableName)
         {
