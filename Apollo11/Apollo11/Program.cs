@@ -38,16 +38,13 @@ namespace Apollo11
         {
             Console.WriteLine($"Number of total candles={candles.Count}");
 
+            // get minimum values for a "good" divergence from the App.config
             var minimumRsiDeltaString = ConfigurationManager.AppSettings.Get("MinimumRsiDelta") ?? throw new SettingsPropertyNotFoundException("No MinimumRsiDelta Provided");
-
             Int32.TryParse(minimumRsiDeltaString, out int minimumRsiDelta);
-
             var minimumPriceDeltaString = ConfigurationManager.AppSettings.Get("MinimumPriceDelta") ?? throw new SettingsPropertyNotFoundException("No MinimumPriceDelta Provided");
-
             Int32.TryParse(minimumPriceDeltaString, out int minimumPriceDelta);
-            
 
-            var backTrackCount = 25;
+            var backTrackCount = 25; // number of candles back to compare, relative to the "current" candle
             var divergences = new List<Divergence>();
 
             // to calculate to highest rsi and price deltas of divergences when all candles are processed
@@ -93,8 +90,6 @@ namespace Apollo11
 
                     if (rsiDelta > 0 && priceDelta < 0) // ANY divergence
                     {
-                        // Console.WriteLine($"DIVERGENCE: rsiDelta={rsiDelta} PriceDelta={priceDelta}");
-
                         var divergence = new Divergence
                         {
                             CurrentCandle = currentCandle,
@@ -103,7 +98,7 @@ namespace Apollo11
                             PriceDelta = priceDelta
                         };
 
-                        divergences.Add(divergence);
+                        divergences.Add(divergence); // add the divergence to the master list
 
                         if (rsiDelta > maxDivergenceRsiDelta)
                         {
@@ -119,7 +114,7 @@ namespace Apollo11
                         cumulativeDivergencePriceDelta += priceDelta;
 
                         // filtering "good" divergences with minimal levels for the deltas
-                        if (rsiDelta > minimumRsiDelta) // arbitrary number, configurable in the appconfig
+                        if (rsiDelta > minimumRsiDelta) // arbitrary number, configurable in the App.config
                         {
                             if (priceDelta < minimumPriceDelta) // same
                             {
