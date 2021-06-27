@@ -20,5 +20,6 @@ namespace Apollo11.Models
         public long NumberOfTrades { get; set; }
         public double TakerBuyBaseAssetVolume { get; set; }
         public double TakerBuyQuoteAssetVolume { get; set; }
+        public int CandleNumber { get; set; }
     }
 }

@@ -71,7 +71,7 @@ namespace Apollo11.Services
             File.AppendAllText(TablesDirectoryPath + "/" + RsiTableName, timeInterval + rsiValue + Environment.NewLine); // todo aram change
         }
 
-        public void WriteDivergenceToTable(Divergence divergence)
+        public void WriteDivergenceToTable(Models.Divergence divergence)
         {
             Console.WriteLine(nameof(WriteDivergenceToTable));
 

@@ -29,41 +29,128 @@ namespace Apollo11
             // fileService.ReadCellFromTable("");
 
             GetDivergences(candles, rsis);
+
+            Console.ReadLine();
         }
 
         private static void GetDivergences(List<Candlestick> candles, double[] rsis)
         {
-//            Console.WriteLine($"lengths: candles={candles.Count} rsis={rsis.Length}");
+            Console.WriteLine($"Number of total candles={candles.Count}");
 
             var backTrackCount = 25;
+            var divergences = new List<Divergence>();
 
+            // to calculate to highest rsi and price deltas of divergences when all candles are processed
+            double maxDivergenceRsiDelta = 0; 
+            double maxDivergencePriceDelta = 0;
+
+            // to calculate the average rsi and price deltas of divergences when all candles are processed
+            double cumulativeDivergenceRsiDelta = 0;
+            double cumulativeDivergencePriceDelta = 0;
+
+            // first for loop is to go through each candle and select it as the "current" candle
             for (int j = 0; j < candles.Count; j++)
             {
+                var currentCandleNumber = candles.Count - j - 1; // -1 because the array starts at 0
+                var currentCandle = candles[currentCandleNumber];
+                currentCandle.CandleNumber = currentCandleNumber;
+                var currentRsi = rsis[currentCandleNumber];
+                var currentPrice = currentCandle.Close;
+
+                // second for loop is to select the "comparison" candle to calculate the deltas relative to the "current" candle
                 for (int i = 0; i < backTrackCount; i++)
                 {
-                    var matchup = new Matchup();
+                    var comparisonCandleNumber = candles.Count - j - 1 - i;
 
-                    var currentRsi = rsis[rsis.Length - j];
-                    var comparisonRsi = rsis[rsis.Length - i]; // todo ronald fix dit moet iets van lenght - i worden ofzo, of gwn i, weet ik niet
+                    if (comparisonCandleNumber < 0) // can't compare to candles that are older than the limit we've set in the config
+                    {
+                        continue;
+                    }
+
+                    var comparisonCandle = candles[comparisonCandleNumber];
+                    comparisonCandle.CandleNumber = comparisonCandleNumber;
+                    var comparisonRsi = rsis[comparisonCandleNumber];
+
+                    if (comparisonRsi == 0) // the last 14 candles all have an rsi of 0
+                    {
+                        continue;
+                    }
+
                     var rsiDelta = currentRsi - comparisonRsi;
 
-                    var currentPrice = candles[candles.Count - 1].Close;
-                    var comparisonPrice = candles[candles.Count - 1].Close;
-                    var PriceDelta = currentPrice - comparisonPrice;
+                    var comparisonPrice = comparisonCandle.Close;
+                    var priceDelta = currentPrice - comparisonPrice;
 
-                    if (rsiDelta > 0 && PriceDelta < 0)
+                    if (rsiDelta > 0 && priceDelta < 0) // ANY divergence
                     {
-                        Console.WriteLine($"DIVERGENCE: rsiDelta={rsiDelta} PriceDelta={PriceDelta}");
+                        // Console.WriteLine($"DIVERGENCE: rsiDelta={rsiDelta} PriceDelta={priceDelta}");
 
+                        var divergence = new Divergence
+                        {
+                            CurrentCandle = currentCandle,
+                            ComparisonCandle = comparisonCandle,
+                            RsiDelta = rsiDelta,
+                            PriceDelta = priceDelta
+                        };
+
+                        divergences.Add(divergence);
+
+                        if (rsiDelta > maxDivergenceRsiDelta)
+                        {
+                            maxDivergenceRsiDelta = rsiDelta; // determine the highest rsiDelta
+                        }
+
+                        if (priceDelta < maxDivergencePriceDelta)
+                        {
+                            maxDivergencePriceDelta = priceDelta; // determine the highest priceDelta
+                        }
+
+                        cumulativeDivergenceRsiDelta += rsiDelta;
+                        cumulativeDivergencePriceDelta += priceDelta;
+
+                        // filtering "good" divergences with minimal levels for the deltas
+                        if (rsiDelta > 10) // arbitrary number, we can make this configurable in the appconfig
+                        {
+                            if (priceDelta < -2000) // same
+                            {
+                                DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                                DateTime currentDate = start.AddMilliseconds(currentCandle.CloseTime).ToLocalTime();
+                                DateTime comparisonDate = start.AddMilliseconds(comparisonCandle.CloseTime).ToLocalTime();
+
+                                Console.WriteLine($"Good divergence found! {nameof(rsiDelta)}={rsiDelta} and {nameof(priceDelta)}={priceDelta}");
+
+                                // we need the dateTimes to manually find the divergences in the graph
+                                Console.WriteLine($"current candle dateTime={currentDate}");
+                                Console.WriteLine($"Comparison candle dateTime={comparisonDate}");
+
+                                // Console.ReadLine();
+                            }
+                        }
                     }
                 }
             }
+
+            var numberOfDivergences = divergences.Count;
+            var averageDivergenceRsiDelta = cumulativeDivergenceRsiDelta / numberOfDivergences;
+            var averageDivergencePriceDelta = cumulativeDivergencePriceDelta / numberOfDivergences;
+
+            Console.WriteLine($"{nameof(numberOfDivergences)}={numberOfDivergences}");
+
+            Console.WriteLine($"{nameof(maxDivergenceRsiDelta)}={maxDivergenceRsiDelta},");
+
+            Console.WriteLine($"{nameof(maxDivergencePriceDelta)}={maxDivergencePriceDelta},");
+
+            Console.WriteLine($"{nameof(averageDivergenceRsiDelta)}={averageDivergenceRsiDelta},");
+
+            Console.WriteLine($"{nameof(averageDivergencePriceDelta)}={averageDivergencePriceDelta}");
         }
     }
 
-    public class Matchup
+    public class Divergence
     {
-        public double rsiDelta { get; set; }
-        public double priceDelta { get; set; }
+        public double RsiDelta { get; set; }
+        public double PriceDelta { get; set; }
+        public Candlestick CurrentCandle { get; set; }
+        public Candlestick ComparisonCandle { get; set; }
     }
 }
