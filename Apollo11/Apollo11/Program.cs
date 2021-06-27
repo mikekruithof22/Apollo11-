@@ -4,6 +4,7 @@ using Apollo11.Services;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 
 namespace Apollo11
 {
@@ -36,6 +37,15 @@ namespace Apollo11
         private static void GetDivergences(List<Candlestick> candles, double[] rsis)
         {
             Console.WriteLine($"Number of total candles={candles.Count}");
+
+            var minimumRsiDeltaString = ConfigurationManager.AppSettings.Get("MinimumRsiDelta") ?? throw new SettingsPropertyNotFoundException("No MinimumRsiDelta Provided");
+
+            Int32.TryParse(minimumRsiDeltaString, out int minimumRsiDelta);
+
+            var minimumPriceDeltaString = ConfigurationManager.AppSettings.Get("MinimumPriceDelta") ?? throw new SettingsPropertyNotFoundException("No MinimumPriceDelta Provided");
+
+            Int32.TryParse(minimumPriceDeltaString, out int minimumPriceDelta);
+            
 
             var backTrackCount = 25;
             var divergences = new List<Divergence>();
@@ -109,9 +119,9 @@ namespace Apollo11
                         cumulativeDivergencePriceDelta += priceDelta;
 
                         // filtering "good" divergences with minimal levels for the deltas
-                        if (rsiDelta > 10) // arbitrary number, we can make this configurable in the appconfig
+                        if (rsiDelta > minimumRsiDelta) // arbitrary number, configurable in the appconfig
                         {
-                            if (priceDelta < -2000) // same
+                            if (priceDelta < minimumPriceDelta) // same
                             {
                                 DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
                                 DateTime currentDate = start.AddMilliseconds(currentCandle.CloseTime).ToLocalTime();
