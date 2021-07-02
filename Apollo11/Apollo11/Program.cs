@@ -31,6 +31,7 @@ namespace Apollo11
 
             GetDivergences(candles, rsis);
 
+            Console.WriteLine("Done");
             Console.ReadLine();
         }
 
@@ -129,6 +130,48 @@ namespace Apollo11
                                 Console.WriteLine($"Comparison candle dateTime={comparisonDate}");
 
                                 // Console.ReadLine();
+
+
+                                // starting buy order evaluation
+                                var futureCandles = candles.Count - j;
+
+                                Console.WriteLine($"current candle ={j}");
+                                Console.WriteLine($"number of future candles ={futureCandles}");
+
+                                // get minimum values for a "good" divergence from the App.config
+                                //var stopLossPercentageString = ConfigurationManager.AppSettings.Get("StopLossPercentage") ?? throw new SettingsPropertyNotFoundException("No StopLossPercentage Provided");
+                                //Double.TryParse(minimumRsiDeltaString, out double StopLossPercentage);
+                                //var stopProfitPercentageString = ConfigurationManager.AppSettings.Get("StopProfitPercentage") ?? throw new SettingsPropertyNotFoundException("No StopProfitPercentage Provided");
+                                //Double.TryParse(minimumPriceDeltaString, out double StopProfitPercentage);
+
+                                for (int k = 0; k < futureCandles; k++)
+                                {
+                                    var futureComparisonCandleNumber = j + k;
+
+                                    if (futureComparisonCandleNumber >= candles.Count)
+                                    {
+                                        continue;
+                                    }
+
+                                    var futureComparisonCanlde = candles[futureComparisonCandleNumber];
+
+                                    if (futureComparisonCanlde.High > currentPrice * 1.02)
+                                    {
+
+                                        Console.WriteLine($"PROFIT! future high bigger dan profit margin: high={futureComparisonCanlde.High} difference={futureComparisonCanlde.High - currentPrice}");
+                                        Console.WriteLine();
+                                        Console.WriteLine();
+                                        break;
+                                    }
+
+                                    if (futureComparisonCanlde.Low < currentPrice * 0.98)
+                                    {
+                                        Console.WriteLine($"LOSS! future low smaller dan stop loss: low={futureComparisonCanlde.Low} difference={currentPrice - futureComparisonCanlde.Low}");
+                                        Console.WriteLine();
+                                        Console.WriteLine();
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
